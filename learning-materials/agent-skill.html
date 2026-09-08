@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>1 分钟掌握 Agent Skill（智能体技能）</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:"Segoe UI","Microsoft YaHei",sans-serif; background:#f5f7fa; color:#2d3748; line-height:1.7; }
+  .wrap { max-width:860px; margin:0 auto; padding:26px 16px 60px; }
+  .badge { display:inline-block; background:#fff7ed; color:#ea580c; font-size:13px; font-weight:600; padding:3px 12px; border-radius:99px; margin-bottom:10px; }
+  h1 { font-size:28px; margin-bottom:4px; }
+  .sub { color:#718096; margin-bottom:20px; font-size:14.5px; }
+  .card { background:#fff; border-radius:14px; padding:20px 22px; margin-bottom:16px; box-shadow:0 1px 4px rgba(0,0,0,.07); }
+  .card h2 { font-size:19px; margin-bottom:12px; display:flex; align-items:center; gap:8px; }
+  .num { background:#ea580c; color:#fff; min-width:26px; height:26px; border-radius:8px; display:inline-flex; align-items:center; justify-content:center; font-size:14px; flex-shrink:0; }
+  .hl { background:linear-gradient(135deg,#fff7ed,#fef2f2); border-left:4px solid #ea580c; }
+  .hl p { font-size:16.5px; font-weight:600; }
+  .story { background:#fffbeb; border-radius:10px; padding:12px 16px; margin-top:10px; font-size:15px; }
+  ul { padding-left:22px; } li { margin:7px 0; }
+  table { width:100%; border-collapse:collapse; margin-top:8px; font-size:14.5px; }
+  th,td { border:1px solid #e2e8f0; padding:8px 11px; text-align:left; vertical-align:top; }
+  th { background:#f7fafc; }
+  code { background:#edf2f7; padding:2px 7px; border-radius:6px; font-size:14px; color:#b83280; }
+  .src { font-size:14.5px; } .src li { margin:10px 0; }
+  .src a { color:#ea580c; word-break:break-all; }
+  .date { color:#a0aec0; font-size:13px; }
+  /* 闯关区 */
+  .levelbar { display:flex; gap:8px; margin-bottom:14px; flex-wrap:wrap; }
+  .lv { flex:1; border-radius:10px; padding:8px 12px; font-size:13.5px; font-weight:600; background:#f1f5f9; color:#94a3b8; text-align:center; }
+  .lv.on { background:#ea580c; color:#fff; box-shadow:0 2px 6px rgba(234,88,12,.35); }
+  .lv.done { background:#dcfce7; color:#16a34a; }
+  .qmeta { font-size:13.5px; color:#718096; margin-bottom:6px; }
+  .qtext { font-size:17px; font-weight:600; margin-bottom:12px; }
+  .opt { display:block; width:100%; text-align:left; background:#f7fafc; border:2px solid #e2e8f0; border-radius:10px; padding:11px 14px; margin:8px 0; cursor:pointer; font-size:15px; transition:.15s; font-family:inherit; }
+  .opt:hover:not(:disabled) { border-color:#fdba74; background:#fff7ed; }
+  .opt:disabled { cursor:default; }
+  .opt.correct { border-color:#16a34a; background:#f0fdf4; }
+  .opt.wrong { border-color:#dc2626; background:#fef2f2; }
+  .expl { display:none; background:#f0fdf4; border-radius:10px; padding:10px 14px; margin-top:10px; font-size:14px; }
+  .expl.wrongcase { background:#fef2f2; }
+  .expl b.good { color:#16a34a; } .expl b.bad { color:#dc2626; }
+  .nextbtn { display:none; margin-top:12px; background:#ea580c; color:#fff; border:none; border-radius:10px; padding:10px 22px; font-size:15px; font-weight:600; cursor:pointer; font-family:inherit; }
+  .nextbtn:hover { background:#c2410c; }
+  #banner { display:none; text-align:center; padding:14px; border-radius:12px; margin-bottom:14px; font-size:16.5px; font-weight:700; }
+  .banner-up { background:#dcfce7; color:#16a34a; }
+  .banner-win { background:#fef9c3; color:#a16207; }
+  .banner-down { background:#fee2e2; color:#dc2626; }
+  .note { font-size:13.5px; color:#718096; margin-top:8px; }
+  .hidden { display:none; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <span class="badge">AI 概念速览 · 一页读完</span>
+  <h1>🧩 Agent Skill（智能体技能）</h1>
+  <p class="sub">阅读约 1 分钟 · 下方有两关共 6 道闯关题 · 生成日期 2026-09-08</p>
+
+  <div class="card hl">
+    <h2>☕ 一句话理解</h2>
+    <p>Agent Skill 就是给 AI 助手配的一张"SOP 操作卡"：一个文件夹，里面一份 <code>SKILL.md</code> 说明书（开头写清"什么时候用我"，正文写"照这几步做"），AI 接到对口的活儿时才抽出来照做。</p>
+    <div class="story">
+      <b>生活例子 🧋：</b>奶茶店来了个万能新店员（AI 助手）。老师傅把"珍珠怎么煮、奶盖怎么打"写成一张张<b>操作卡</b>贴在卡墙上，每张卡的<b>标签</b>写着"什么单子用我"。接到订单，店员扫一眼标签——对上"珍珠奶茶"就抽出那张卡照着做。<b>平时卡片收在抽屉里，不占台面</b>；有了卡片，新店员不用每次重新学，出品永远一个味。
+    </div>
+  </div>
+
+  <div class="card">
+    <h2><span class="num">1</span>四个核心要点</h2>
+    <ul>
+      <li><b>它是什么</b>：一个文件夹 + <code>SKILL.md</code> 说明书（YAML 头部写 <code>name</code> 和 <code>description</code>，正文写操作步骤），可附带脚本和参考资料</li>
+      <li><b>怎么触发</b>：AI 拿你的任务和每张卡的 <code>description</code> 做"对号入座"，匹配上才加载——这叫<b>渐进式加载</b>：平时只占一行字，用时才展开，省钱又不占"脑容量"</li>
+      <li><b>有什么用</b>：把"会做某件事的方法"沉淀成资产——一次编写、每次复用、输出质量稳定；相当于给 AI 装专业外挂</li>
+      <li><b>别搞混</b>：Skill 管"怎么做"（SOP 手册），MCP 管"连得上"（USB 外设），RAG 管"查什么"（资料柜）——三个互补，不是竞品</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2><span class="num">2</span>我是从这些资料里整理的（已逐条点开核实）</h2>
+    <ul class="src">
+      <li>Agent Skills 开放标准官网 —— SKILL.md 格式的官方定义（name / description 字段）<br>
+        <a href="https://agentskills.io" target="_blank">agentskills.io</a> <span class="date">（核查日期 2026-09-08）</span></li>
+      <li>Anthropic 工程博客 — <i>Equipping agents for the real world with Agent Skills</i>（2025-10-16）："渐进式披露"三层加载机制、可捆绑脚本、安全提醒<br>
+        <a href="https://www.anthropic.com/engineering/equipping-agents-for-the-real-world-with-agent-skills" target="_blank">anthropic.com/engineering/equipping-agents-for-the-real-world-with-agent-skills</a> <span class="date">（核查日期 2026-09-08）</span></li>
+      <li>Claude Code 官方文档 — <i>Extend Claude with skills</i>：Skill 的存放位置（个人级/项目级）与触发排查<br>
+        <a href="https://code.claude.com/docs/en/skills" target="_blank">code.claude.com/docs/en/skills</a> <span class="date">（核查日期 2026-09-08）</span></li>
+      <li>WorkBuddy 官方文档 —— 项目级 Skill 在本仓库的存放位置 <code>.workbuddy/skills/</code><br>
+        <a href="https://www.workbuddy.cn/docs/workbuddy/Overview" target="_blank">workbuddy.cn/docs/workbuddy/Overview</a> <span class="date">（核查日期 2026-09-08）</span></li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2><span class="num">3</span>🎮 闯关测试：两关六题，答错降级重来</h2>
+    <div class="levelbar">
+      <div class="lv on" id="lv1">🚩 第一关 · 基础</div>
+      <div class="lv" id="lv2">⚔️ 第二关 · 进阶</div>
+      <div class="lv" id="lv3">🏆 通关</div>
+    </div>
+    <div id="banner"></div>
+    <div id="quiz">
+      <div class="qmeta" id="qmeta"></div>
+      <div class="qtext" id="qtext"></div>
+      <div id="opts"></div>
+      <div class="expl" id="expl"></div>
+      <button class="nextbtn" id="nextbtn">下一题 →</button>
+    </div>
+  </div>
+
+  <p class="note">本页由 AI 生成初稿并经人工核查来源；保存在课程仓库 learning-materials/agent-skill.html</p>
+</div>
+
+<script>
+const levels = [
+  { name: "第一关 · 基础", questions: [
+    { q: "Agent Skill 的本体是什么？",
+      opts: [
+        { t: "一个需要安装的压缩包", why: "错：Skill 不需要'安装'，它就是一个放在指定目录下的文件夹，AI 直接读取。" },
+        { t: "一份'说明书 + 配套材料'，核心文件是 SKILL.md", ok: true, why: "对！Skill = 文件夹 + SKILL.md（YAML 头部声明 name/description，正文写操作步骤），还可以附带脚本和参考资料。" },
+        { t: "一种新的编程语言", why: "错：Skill 不涉及新语言，SKILL.md 就是 Markdown 文本。" },
+        { t: "AI 模型内部自带的脑内知识", why: "错：Skill 是外置的文件，不会改变模型参数——这正是它能随意增删、分享的原因。" }
+      ]},
+    { q: "智能体靠 SKILL.md 里的哪个字段判断'这个任务要不要用这个技能'？",
+      opts: [
+        { t: "name（技能名）", why: "错：name 只是标识符，像操作卡上的编号，不负责匹配。" },
+        { t: "version（版本号）", why: "错：版本号用于管理迭代，与触发无关。" },
+        { t: "description（描述）", ok: true, why: "对！description 写清'什么时候用我'，AI 拿任务和它做语义匹配——所以它是触发开关，必须写具体。" },
+        { t: "license（许可证）", why: "错：license 只声明开源协议。" }
+      ]},
+    { q: "装了很多 Skill 之后，智能体的'脑容量'（上下文）会被撑爆吗？",
+      opts: [
+        { t: "会，装得越多占用越多", why: "错：如果全部常驻，几十个技能早就把上下文占满了——实际设计不是这样。" },
+        { t: "不会——平时只有一行 description，任务命中才展开正文", ok: true, why: "对！这就是'渐进式加载'：常驻的只有一小段元数据，命中后按需读入 SKILL.md 正文和附属文件。" },
+        { t: "取决于电脑内存大小", why: "错：瓶颈在模型的上下文窗口（token 数），不是内存。" },
+        { t: "由用户每次手动上传", why: "错：Skill 预先放在固定目录（如项目级 .workbuddy/skills/），AI 自动发现和匹配。" }
+      ]}
+  ]},
+  { name: "第二关 · 进阶", questions: [
+    { q: "'渐进式披露（Progressive Disclosure）'的三层加载顺序是？",
+      opts: [
+        { t: "安装 → 启动 → 卸载", why: "错：这是软件生命周期，Skill 没有安装/卸载流程，放进目录即生效。" },
+        { t: "元数据（name+description） → SKILL.md 正文 → 附属脚本/参考文件", ok: true, why: "对！第一层常驻极小；命中才读正文；正文里引用的脚本和资料再按需打开——成本逐层递增、永不浪费。" },
+        { t: "输入 → 处理 → 输出", why: "错：这是程序通用流程，不是 Skill 的加载设计。" },
+        { t: "读取 → 改写 → 删除", why: "错：Skill 是只读参考，AI 不会改写它。" }
+      ]},
+    { q: "Skill 和 MCP 工具的区别，最准确的表述是？",
+      opts: [
+        { t: "Skill 收费，MCP 免费", why: "错：两者都有免费和付费的实现，收费方式不是区别。" },
+        { t: "没有区别，是一个东西的两种叫法", why: "错：它们解决不同问题，还经常搭配使用。" },
+        { t: "Skill 教 AI '怎么做'（方法论），MCP 让 AI '连得上'（外部系统连接器）", ok: true, why: "对！Skill 是 SOP 手册（怎么封一杯奶茶），MCP 是接口（让店员能操作收银机）——手册里可以写'此时用收银机'，两者互补。" },
+        { t: "Skill 只能处理 PDF 文件", why: "错：Skill 可以是任何任务领域，PDF 只是举例。" }
+      ]},
+    { q: "为什么 description 必须写得具体（比如'用户要导出 PDF 报告时使用'，而不是'一个有用的助手'）？",
+      opts: [
+        { t: "纯粹为了文档美观", why: "错：description 是功能性字段，不是文档装饰。" },
+        { t: "AI 靠它做语义匹配——写含糊了会'该触发不触发、不该触发乱触发'", ok: true, why: "对！官方文档专门把'技能不触发/触发过频'列为常见故障，根因多是 description 太笼统或太宽泛。" },
+        { t: "description 越长，模型越聪明", why: "错：长度不等于匹配质量，具体的使用时机才关键。" },
+        { t: "它只影响搜索排序", why: "错：它直接决定 AI 运行时是否加载这个技能。" }
+      ]}
+  ]}
+];
+
+let level = 0, qi = 0, answered = false, lastOk = true;
+const $ = id => document.getElementById(id);
+
+function setLevelBar() {
+  $("lv1").className = "lv" + (level === 0 ? " on" : " done");
+  $("lv2").className = "lv" + (level === 1 ? " on" : "");
+  $("lv3").className = "lv";
+  if (level > 1) $("lv3").className = "lv on";
+}
+
+function showBanner(text, cls) {
+  const b = $("banner");
+  b.textContent = text;
+  b.className = cls;
+  b.style.display = "block";
+}
+function hideBanner() { $("banner").style.display = "none"; }
+
+function render() {
+  setLevelBar();
+  answered = false;
+  hideBanner();
+  $("expl").style.display = "none";
+  $("nextbtn").style.display = "none";
+  const lv = levels[level], q = lv.questions[qi];
+  $("qmeta").textContent = "📍 " + lv.name + " · 第 " + (qi + 1) + " / " + lv.questions.length + " 题";
+  $("qtext").textContent = "Q" + (level * 3 + qi + 1) + ". " + q.q;
+  const box = $("opts");
+  box.innerHTML = "";
+  q.opts.forEach((o, i) => {
+    const btn = document.createElement("button");
+    btn.className = "opt";
+    btn.textContent = String.fromCharCode(65 + i) + ". " + o.t;
+    btn.onclick = () => answer(i, btn);
+    box.appendChild(btn);
+  });
+}
+
+function answer(i, btn) {
+  if (answered) return;
+  answered = true;
+  const q = levels[level].questions[qi];
+  const ok = !!q.opts[i].ok;
+  lastOk = ok;
+  const buttons = $("opts").children;
+  for (let j = 0; j < buttons.length; j++) {
+    buttons[j].disabled = true;
+    if (q.opts[j].ok) buttons[j].classList.add("correct");
+  }
+  if (!ok) btn.classList.add("wrong");
+  const ex = $("expl");
+  ex.innerHTML = (ok ? '<b class="good">✅ 答对了！</b>' : '<b class="bad">❌ 答错了。</b>') +
+    '<br><b>正确答案：' + String.fromCharCode(65 + q.opts.findIndex(o => o.ok)) + '</b> — ' + q.opts.find(o => o.ok).why +
+    (ok ? "" : "<br>你选的选项：" + q.opts[i].why);
+  ex.style.display = "block";
+  const nb = $("nextbtn");
+  nb.style.display = "inline-block";
+  if (ok) {
+    nb.textContent = (level === 1 && qi === 2) ? "查看通关结果 🏆" : "下一题 →";
+  } else {
+    nb.textContent = (level === 1) ? "降回第一关，重新闯 ↩" : "回到本关第一题，重新闯 ↩";
+  }
+}
+
+$("nextbtn").onclick = function () {
+  // 通过最近一次作答的对错决定推进/降级
+  const wasWrong = !lastOk;
+  hideBanner();
+  if (!wasWrong) {
+    if (qi < 2) { qi++; render(); return; }
+    if (level === 0) {
+      level = 1; qi = 0;
+      showBanner("🎉 第一关通过！升级到第二关 · 进阶题（难度提升，答错会降回第一关）", "banner-up");
+      setTimeout(render, 1200);
+      $("quiz").classList.add("hidden");
+      setTimeout(() => $("quiz").classList.remove("hidden"), 1300);
+      return;
+    }
+    // 通关
+    showBanner("🏆 恭喜通关！六题全过，Agent Skill 已经装进你脑子里了——现在你知道本仓库的 SKILL.md 为什么那样写了吧！", "banner-win");
+    $("quiz").style.display = "none";
+    setLevelBar(); $("lv3").className = "lv on";
+    return;
+  }
+  // 答错降级
+  if (level === 1) {
+    level = 0; qi = 0;
+    showBanner("⬇️ 第二关答错，降回第一关重新闯（基础不牢，地基要打牢！）", "banner-down");
+  } else {
+    qi = 0;
+    showBanner("↩️ 本关答错，回到第一题重新闯（看看解析再战）", "banner-down");
+  }
+  setTimeout(render, 1200);
+  $("quiz").classList.add("hidden");
+  setTimeout(() => $("quiz").classList.remove("hidden"), 1300);
+};
+
+render();
+</script>
+</body>
+</html>
