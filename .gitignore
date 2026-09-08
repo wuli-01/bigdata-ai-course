@@ -1,0 +1,29 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# 环境与密钥
+.env
+.env.*
+*.token
+
+# 系统文件
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# 临时与日志
+*.log
+*.tmp
+~$*
+$RECYCLE.BIN/
+
+# 编辑器
+.vscode/ipch/
+.idea/
+
+# Node（若引入前端工具）
+node_modules/

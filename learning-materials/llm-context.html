@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>概念学习：大模型的上下文（Context）</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:"Segoe UI","Microsoft YaHei",sans-serif; background:#f5f7fa; color:#2d3748; line-height:1.75; }
+  .wrap { max-width:880px; margin:0 auto; padding:28px 16px 60px; }
+  .badge { display:inline-block; background:#ecfdf5; color:#0d9488; font-size:13px; font-weight:600; padding:3px 12px; border-radius:99px; margin-bottom:10px; }
+  h1 { font-size:28px; margin-bottom:4px; }
+  .sub { color:#718096; margin-bottom:22px; font-size:14.5px; }
+  .card { background:#fff; border-radius:14px; padding:20px 22px; margin-bottom:16px; box-shadow:0 1px 4px rgba(0,0,0,.07); }
+  .card h2 { font-size:19px; margin-bottom:12px; display:flex; align-items:center; gap:8px; }
+  .num { background:#0d9488; color:#fff; min-width:26px; height:26px; border-radius:8px; display:inline-flex; align-items:center; justify-content:center; font-size:14px; flex-shrink:0; }
+  .hl { background:linear-gradient(135deg,#ecfdf5,#eff6ff); border-left:4px solid #0d9488; }
+  .hl p { font-size:16.5px; font-weight:600; }
+  ul,ol { padding-left:22px; }
+  li { margin:6px 0; }
+  table { width:100%; border-collapse:collapse; margin-top:8px; font-size:14.5px; }
+  th,td { border:1px solid #e2e8f0; padding:8px 11px; text-align:left; vertical-align:top; }
+  th { background:#f7fafc; }
+  code { background:#edf2f7; padding:2px 7px; border-radius:6px; font-size:14px; color:#b83280; }
+  .flow { display:flex; flex-wrap:wrap; gap:6px; align-items:center; margin:12px 0; }
+  .step { background:#ecfdf5; border:1px solid #99f6e4; padding:7px 12px; border-radius:10px; font-size:14px; font-weight:500; }
+  .plus { color:#0d9488; font-weight:700; }
+  .src { font-size:14.5px; }
+  .src li { margin:10px 0; }
+  .src a { color:#0d9488; word-break:break-all; }
+  .date { color:#a0aec0; font-size:13px; }
+  .note { font-size:13.5px; color:#718096; margin-top:8px; }
+  .warn { background:#fffbeb; border-left:4px solid #f59e0b; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <span class="badge">概念学习资料 · 2 / 3</span>
+  <h1>🧠 大模型的上下文（Context / 上下文窗口）</h1>
+  <p class="sub">生成方式：按本仓库 Skill「concept-explainer」流程生成，AI 初稿 + 人工核查 · 生成日期 2026-09-08</p>
+
+  <div class="card hl">
+    <h2>💡 个人解释</h2>
+    <p>上下文就是模型"此刻能看见的全部信息"，像一张<b>工作台的桌面</b>：系统提示、聊天历史、工具返回结果、检索来的资料，全都摊在这张桌上。桌面的宽度是有限的（上下文窗口，按 token 计量），放不下的东西就被清走；而模型只会基于"桌上有什么"来推理——<b>桌上没有的，它就不知道</b>。所以用好大模型，很大程度上就是"上下文管理"这门手艺。</p>
+  </div>
+
+  <div class="card">
+    <h2><span class="num">⚙</span>核心机制 / 组成</h2>
+    <div class="flow">
+      <span class="step">系统提示 System Prompt</span><span class="plus">+</span>
+      <span class="step">对话历史</span><span class="plus">+</span>
+      <span class="step">工具调用与返回结果</span><span class="plus">+</span>
+      <span class="step">检索注入的资料</span><span class="arrow">→</span>
+      <span class="step">拼成一次请求（按 token 计量）</span>
+    </div>
+    <ul>
+      <li><b>Token 计量</b>：上下文长度按 token（词元）计算，一个汉字约 1~2 个 token；窗口大小从几万到上百万 token 不等，超出就必须截断或压缩</li>
+      <li><b>一次性，无记忆</b>：模型本身无状态，"记得之前说过什么"只是因为历史被重新拼进了上下文；新会话 = 新桌面</li>
+      <li><b>位置偏差</b>：经典研究发现"Lost in the Middle"——信息在上下文<b>开头或结尾</b>时模型用得最好，塞在<b>中间</b>长上下文里性能明显下降</li>
+      <li><b>上下文工程（Context Engineering）</b>：压缩摘要、截断旧历史、RAG 检索注入、Skill 按需加载——都是为了在有限窗口里放"最有用的东西"</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2><span class="num">🎯</span>具体应用场景</h2>
+    <p>还是用我自己仓库的经历：AI 助手在帮我 push 仓库时，上下文里装着<b>系统提示（工具使用规则）+ 整个会话历史（装环境、建仓库的经过）+ 每条命令的输出</b>。当它看到"Connection was reset"的报错出现在上下文里，才能决定下一步去扫可用 IP。如果开新会话（上下文清空），它就完全不知道之前做过什么，得从头交代。另外，Agent Skill 的"渐进式加载"本质也是上下文管理：平时只放一行 description，命中了才把整份说明书装进桌面。</p>
+  </div>
+
+  <div class="card warn">
+    <h2><span class="num">⚠</span>易混淆问题 / 使用边界</h2>
+    <table>
+      <tr><th>容易混淆</th><th>区别</th></tr>
+      <tr><td>上下文 vs 记忆</td><td>"记忆"是拟人说法：短期记忆=当前上下文，长期记忆=靠外部存储再检索进上下文，模型本身不会记住任何东西</td></tr>
+      <tr><td>上下文 vs 微调</td><td>微调把知识"焊进"模型参数（训练阶段、成本高）；上下文是"临时摆在桌上"（推理阶段、随时可换）。查最新资料应靠上下文注入，不是微调</td></tr>
+      <tr><td>窗口大 vs 用得好</td><td>窗口百万 token ≠ 全都能用好——中间位置的信息仍易被忽略（Lost in the Middle），重要内容应放开头/结尾</td></tr>
+    </table>
+    <ul>
+      <li><b>边界</b>：放进上下文的内容会随请求发送给模型服务商，敏感信息（密码、token）要避免进入；上下文越长，费用与延迟越高</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2><span class="num">📚</span>可核查的资料来源</h2>
+    <ul class="src">
+      <li>Nelson F. Liu 等 — <i>Lost in the Middle: How Language Models Use Long Contexts</i>（TACL 2023 / arXiv:2307.03172）：实证发现相关信息位于长上下文中间时模型性能显著下降<br>
+        <a href="https://arxiv.org/abs/2307.03172" target="_blank">arxiv.org/abs/2307.03172</a> <span class="date">（核查日期：2026-09-08，可访问）</span></li>
+      <li>Prompt Engineering Guide — <i>LLM Settings</i>：temperature、max length 等与上下文/输出控制直接相关的参数说明<br>
+        <a href="https://www.promptingguide.ai/introduction/settings" target="_blank">promptingguide.ai/introduction/settings</a> <span class="date">（核查日期：2026-09-08，可访问）</span></li>
+      <li>各模型官方文档的 "context window" 页面（如 OpenAI、DeepSeek 模型页）列有各模型窗口大小，数据随版本变化，使用前请以官方页面为准 <span class="date">（未逐一核查，建议人工打开确认）</span></li>
+    </ul>
+    <p class="note">注：页面内容由 AI 按 Skill 流程生成初稿，关键论断与链接已人工核实；"个人解释"与"应用场景"部分为本人经历改写。</p>
+  </div>
+</div>
+</body>
+</html>

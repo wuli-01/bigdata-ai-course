@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>概念关系：Agent · 上下文 · Skill</title>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:"Segoe UI","Microsoft YaHei",sans-serif; background:#f5f7fa; color:#2d3748; line-height:1.75; }
+  .wrap { max-width:920px; margin:0 auto; padding:28px 16px 60px; }
+  .badge { display:inline-block; background:#fdf2f8; color:#db2777; font-size:13px; font-weight:600; padding:3px 12px; border-radius:99px; margin-bottom:10px; }
+  h1 { font-size:28px; margin-bottom:4px; }
+  .sub { color:#718096; margin-bottom:22px; font-size:14.5px; }
+  .card { background:#fff; border-radius:14px; padding:20px 22px; margin-bottom:16px; box-shadow:0 1px 4px rgba(0,0,0,.07); }
+  .card h2 { font-size:19px; margin-bottom:12px; }
+  table { width:100%; border-collapse:collapse; margin-top:8px; font-size:14.5px; }
+  th,td { border:1px solid #e2e8f0; padding:8px 11px; text-align:left; vertical-align:top; }
+  th { background:#f7fafc; }
+  code { background:#edf2f7; padding:2px 7px; border-radius:6px; font-size:14px; color:#b83280; }
+  .mermaid { background:#fff; display:flex; justify-content:center; padding:10px 0; }
+  .metaphor { display:flex; gap:10px; flex-wrap:wrap; margin-top:10px; }
+  .m { flex:1 1 220px; border-radius:12px; padding:14px 16px; font-size:14.5px; }
+  .m b { display:block; margin-bottom:4px; font-size:15.5px; }
+  .m1 { background:#eef2ff; } .m2 { background:#ecfdf5; } .m3 { background:#fff7ed; }
+  .note { font-size:13.5px; color:#718096; margin-top:8px; }
+  ol,ul { padding-left:22px; } li { margin:6px 0; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <span class="badge">概念关系说明</span>
+  <h1>🔗 Agent · 上下文 · Skill：三者如何协作</h1>
+  <p class="sub">生成方式：按本仓库 Skill「concept-explainer」流程生成，AI 初稿 + 人工核查 · 生成日期 2026-09-08</p>
+
+  <div class="card">
+    <h2>一句话概括三者关系</h2>
+    <p><b>Agent 是执行者，上下文是它的"工作台"，Skill 是预先放好的"专业剧本"</b>——任务命中剧本时，剧本被摊开到工作台上，Agent 照着高质量的方法把活干完。</p>
+    <div class="metaphor">
+      <div class="m m1"><b>🤖 Agent = 厨师</b>自主决定做什么菜、按什么顺序做，遇问题换方案</div>
+      <div class="m m2"><b>🧠 上下文 = 厨师眼前的操作台</b>台面上看得见的食材和订单决定他每一步判断；台面窄、堆太满都会出错</div>
+      <div class="m m3"><b>🧩 Skill = 整理好的菜谱卡</b>平时收在抽屉里（不占台面），接到对应菜的单子才抽出来铺在台面上</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>对比表：三者各自的角色</h2>
+    <table>
+      <tr><th>维度</th><th>Agent（智能体）</th><th>上下文（Context）</th><th>Skill（技能）</th></tr>
+      <tr><td>是什么</td><td>能自主规划、调用工具、多步执行任务的 AI 系统</td><td>单次推理时模型能"看见"的全部信息（系统提示+历史+工具结果+注入资料），按 token 计量、容量有限</td><td>以 SKILL.md 为核心的可复用能力包：说明书 + 可选脚本/资料</td></tr>
+      <tr><td>生命周期</td><td>长期运行，跨多任务</td><td>单次请求内有效，会话结束即消失</td><td>持久保存在仓库/系统中，版本化管理</td></tr>
+      <tr><td>怎么"进入"上下文</td><td>——（Agent 是消费者）</td><td>——（上下文是容器）</td><td>平时只常驻一行 description；任务语义命中后按渐进式披露三层注入</td></tr>
+      <tr><td>类比</td><td>厨师</td><td>操作台</td><td>菜谱卡</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2>协作流程图（Mermaid）</h2>
+    <pre class="mermaid">
+flowchart TB
+    U["👤 用户提出任务"] --> A["🤖 Agent 接收目标"]
+    A --> CTX["🧠 组装上下文<br/>系统提示 + 对话历史 + 工具结果"]
+    CTX --> P{"匹配到某个 Skill<br/>的 description？"}
+    P -- "命中" --> S["🧩 渐进式加载 Skill<br/>元数据 → SKILL.md 正文 → 附属文件"]
+    S --> CTX2["🧠 Skill 内容注入上下文<br/>（按需、有限的常驻成本）"]
+    P -- "未命中" --> EX
+    CTX2 --> EX["⚙️ Agent 循环执行<br/>规划 → 调用工具 → 观察结果"]
+    EX --> DONE{"任务完成？"}
+    DONE -- "否" --> CTX
+    DONE -- "是" --> OUT["✅ 产出结果"]
+    EX -. "沉淀方法论" .-> SK2["📝 新的经验写成新的 Skill<br/>（知识资产化）"]
+    SK2 -.-> P
+    </pre>
+    <p class="note">图解：上下文贯穿 Agent 的每个决策循环（虚线部分表示 Agent 可以把新经验固化为 Skill，供未来任务命中——形成"使用→沉淀→复用"的飞轮）。</p>
+  </div>
+
+  <div class="card">
+    <h2>两个重点关系（作业核心问题）</h2>
+    <ol>
+      <li><b>上下文如何影响 Agent 的工作？</b><br>
+        Agent 每一步"决定下一步做什么"完全基于当前上下文：报错信息在上下文里，它才知道要修复；历史尝试在上下文里，它才不会重复犯错。因此上下文的质量 = Agent 的智力上限：<b>缺失关键信息会决策错误</b>（桌上没有的它不知道）；<b>塞入无关信息会稀释注意力</b>（Lost in the Middle：中间位置的信息最易被忽略）；<b>超出窗口容量会被截断</b>，早期经历可能"失忆"。所以好的 Agent 系统都在做"上下文工程"——像整理操作台一样，把最相关的内容放在开头/结尾，及时压缩清理。</li>
+      <li><b>Skill 如何沉淀可复用的任务知识？</b><br>
+        把"某类任务怎么做才专业"从对话流里<b>固化成文件</b>：适用场景写成 description（可被语义匹配）、操作步骤写成 SKILL.md 正文、工具性代码放进 scripts/。它的复用机制是：一次编写 → 每次任务命中自动加载 → 输出风格与质量保持一致 → 可以版本管理与分享。本仓库就是实例：<code>concept-explainer</code> Skill 定义了"概念学习资料"的生成流水线，本次三份资料 + 这份关系说明都是它的产出；下次学习"Hadoop"时同一 Skill 直接复用。</li>
+    </ol>
+  </div>
+
+  <div class="card">
+    <h2>以本仓库学习流程为例串一遍</h2>
+    <ul>
+      <li>我（用户）说："我想学习 Agent 这个概念" —— 任务进入 <b>Agent</b></li>
+      <li>Agent 在<b>上下文</b>中看到本仓库的 Skill 列表，<code>concept-explainer</code> 的 description 匹配成功</li>
+      <li>按<b>Skill</b> 的指导：先上网核实定义（来源进入上下文）→ 按五板块生成 <code>learning-materials/agent.html</code> → 自检 → 提交 git</li>
+      <li>产出保持统一结构，且全过程我只需一句话——这就是三者协作的价值：<b>Agent 负责干，上下文负责记，Skill 负责对</b></li>
+    </ul>
+  </div>
+</div>
+<script>mermaid.initialize({ startOnLoad: true, theme: 'neutral' });</script>
+</body>
+</html>
