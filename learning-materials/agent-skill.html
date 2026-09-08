@@ -96,6 +96,7 @@
       <div class="lv" id="lv3">🏆 通关</div>
     </div>
     <div id="banner"></div>
+    <button class="nextbtn" id="againbtn" style="display:none;background:#16a34a">🔄 再玩一次（回到第一关）</button>
     <div id="quiz">
       <div class="qmeta" id="qmeta"></div>
       <div class="qtext" id="qtext"></div>
@@ -176,6 +177,13 @@ function showBanner(text, cls) {
 }
 function hideBanner() { $("banner").style.display = "none"; }
 
+$("againbtn").onclick = function () {
+  level = 0; qi = 0;
+  $("againbtn").style.display = "none";
+  $("quiz").style.display = "block";
+  render();
+};
+
 function render() {
   setLevelBar();
   answered = false;
@@ -239,6 +247,7 @@ $("nextbtn").onclick = function () {
     // 通关
     showBanner("🏆 恭喜通关！六题全过，Agent Skill 已经装进你脑子里了——现在你知道本仓库的 SKILL.md 为什么那样写了吧！", "banner-win");
     $("quiz").style.display = "none";
+    $("againbtn").style.display = "inline-block";
     setLevelBar(); $("lv3").className = "lv on";
     return;
   }
