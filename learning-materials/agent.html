@@ -48,6 +48,13 @@
   .banner-down { background:#fee2e2; color:#dc2626; }
   .note { font-size:13.5px; color:#718096; margin-top:8px; }
   .hidden { display:none; }
+  .viz { display:flex; gap:18px; align-items:center; flex-wrap:wrap; margin-top:12px; }
+  .viz svg { flex:0 0 260px; }
+  .viz .legend { flex:1 1 240px; font-size:14px; }
+  .legend .li { display:flex; align-items:center; gap:8px; margin:7px 0; }
+  .legend .dot { width:12px; height:12px; border-radius:4px; flex-shrink:0; }
+  .spin { animation: spin 14s linear infinite; transform-origin: 130px 130px; }
+  @keyframes spin { to { transform: rotate(360deg); } }
 </style>
 </head>
 <body>
@@ -81,6 +88,27 @@
       <li><b>循环与终止</b>：在"思考—行动"循环中运行，靠条件（任务完成 / 步数上限 / 需要人工确认）退出</li>
       <li>Anthropic 的建议：<b>能不用 Agent 就不用</b>——固定流程用"工作流（Workflow）"更可控，开放式多步任务才值得用 Agent</li>
     </ul>
+    <div class="viz">
+      <svg width="260" height="260" viewBox="0 0 260 260">
+        <circle class="spin" cx="130" cy="130" r="86" fill="none" stroke="#c7d2fe" stroke-width="3" stroke-dasharray="10 8"/>
+        <g font-size="13" font-weight="600" text-anchor="middle">
+          <rect x="95" y="14" width="70" height="34" rx="9" fill="#4f46e5"/><text x="130" y="36" fill="#fff">接目标</text>
+          <rect x="196" y="112" width="70" height="34" rx="9" fill="#7c3aed"/><text x="231" y="134" fill="#fff">规划</text>
+          <rect x="95" y="212" width="70" height="34" rx="9" fill="#0d9488"/><text x="130" y="234" fill="#fff">用工具</text>
+          <rect x="-6" y="112" width="70" height="34" rx="9" fill="#ea580c"/><text x="29" y="134" fill="#fff">看结果</text>
+        </g>
+        <circle cx="130" cy="130" r="52" fill="#eef2ff"/>
+        <text x="130" y="126" text-anchor="middle" font-size="15" font-weight="700" fill="#4f46e5">Agent</text>
+        <text x="130" y="146" text-anchor="middle" font-size="12" fill="#64748b">循环直到完成</text>
+      </svg>
+      <div class="legend">
+        <div class="li"><span class="dot" style="background:#4f46e5"></span><b>接目标</b>——用户一句话交代任务</div>
+        <div class="li"><span class="dot" style="background:#7c3aed"></span><b>规划</b>——拆步骤、决定下一步（ReAct）</div>
+        <div class="li"><span class="dot" style="background:#0d9488"></span><b>用工具</b>——执行命令/读写文件/访问 API</div>
+        <div class="li"><span class="dot" style="background:#ea580c"></span><b>看结果</b>——观察输出，错了就换方案</div>
+        <div class="li" style="color:#64748b">虚线圆表示循环持续转动，直到任务完成</div>
+      </div>
+    </div>
   </div>
 
   <div class="card">

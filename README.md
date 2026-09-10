@@ -26,10 +26,12 @@ bigdata-ai-course/
 | 文件 | 说明 |
 |------|------|
 | `.workbuddy/skills/concept-crash-course/SKILL.md` | 项目级 Agent Skill：接收任意新概念，产出"单页 HTML 学习卡 + 闯关测试"的完整流程规范 |
-| `learning-materials/agent.html` | AI Agent：外卖店员类比 + 规划/工具/记忆机制 + 我的仓库实战场景 + 与聊天机器人/工作流的辨析 + 3 条来源 + 闯关测试 |
-| `learning-materials/llm-context.html` | 大模型的上下文：厨师操作台类比 + token 计量与位置偏差 + push 实战场景 + 与记忆/微调的辨析 + 3 条来源 + 闯关测试 |
-| `learning-materials/skill.html` | Agent Skill：奶茶店 SOP 卡类比 + 渐进式加载 + 本仓库 Skill 实战场景 + 与 MCP/RAG 的辨析 + 4 条来源 + 闯关测试 |
-| `learning-materials/concept-relationship.html` | 三概念关系：厨师/操作台/菜谱卡类比 + 角色对比表 + 协作流程图 + 两个重点问题（上下文如何影响 Agent、Skill 如何沉淀知识） |
+| `learning-materials/agent.html` | AI Agent：外卖店员类比 + 规划/工具/记忆机制 + **Agent 循环环图（SVG 动画）** + 我的仓库实战场景 + 与聊天机器人/工作流的辨析 + 3 条来源 + 闯关测试 |
+| `learning-materials/llm-context.html` | 大模型的上下文：厨师操作台类比 + token 计量与位置偏差 + **上下文组成堆叠条形图 + 注意力位置偏差渐变图** + push 实战场景 + 与记忆/微调的辨析 + 3 条来源 + 闯关测试 |
+| `learning-materials/skill.html` | Agent Skill：奶茶店 SOP 卡类比 + 渐进式加载 + **三层加载"脑容量"阶梯图** + 本仓库 Skill 实战场景 + 与 MCP/RAG 的辨析 + 4 条来源 + 闯关测试 |
+| `learning-materials/concept-relationship.html` | 三概念关系：厨师/操作台/菜谱卡类比 + 角色对比表 + 协作流程图 + **知识飞轮环形图（SVG 动画）** + 两个重点问题（上下文如何影响 Agent、Skill 如何沉淀知识） |
+
+所有可视化均用**纯 SVG/CSS 实现**（部分带动画），不依赖外部 CDN，离线双击即可完整显示。
 
 每份资料都包含五项必备内容：**概念的个人解释、核心机制或组成、一个具体应用场景、容易混淆的问题或使用边界、可核查的资料来源链接**；
 额外配有**两关六题闯关测试**（答对升级、答错降级、通关后可"再玩一次"）。
@@ -69,5 +71,5 @@ HTML 是普通网页，任何浏览器直接打开即可，不需要安装任何
   2. "个人解释""生活例子"改写为结合自己仓库经历的第一人称表述，避免照抄定义
   3. 用 Node 模拟浏览器跑了一遍闯关逻辑，验证"升级 / 降级 / 通关 / 再玩一次"均正常工作；发现"通关后无法重玩"的问题后补上了"再玩一次"按钮
   4. 按作业要求逐项核查缺漏，修正了三处：① 补建缺失的 `agent.html`、`llm-context.html`、`concept-relationship.html` 与 `.gitignore`；② 把 `agent-skill.html` 改名为规范要求的 `skill.html`；③ 给 `skill.html` 补上缺失的"具体应用场景""容易混淆/使用边界"两个必备板块
-  5. 概念关系页的流程图改用纯 HTML/CSS 绘制（不依赖外部 CDN），保证离线可打开
+  5. 概念关系页的流程图改用纯 HTML/CSS 绘制（不依赖外部 CDN），保证离线可打开；应"内容可视化"要求，四份资料新增了 5 个 SVG/CSS 图表（Agent 循环环图、上下文组成堆叠条、注意力位置偏差渐变条、渐进式加载阶梯图、知识飞轮环图），全部离线可用
   6. 按用户要求删除了 README 中的作业进度清单；README 内容按仓库真实文件撰写，未虚构不存在的内容

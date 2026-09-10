@@ -48,6 +48,14 @@
   .banner-down { background:#fee2e2; color:#dc2626; }
   .note { font-size:13.5px; color:#718096; margin-top:8px; }
   .hidden { display:none; }
+  .tiers { margin-top:14px; }
+  .tier { display:flex; align-items:center; gap:10px; margin:9px 0; }
+  .tbar { height:34px; border-radius:8px; display:flex; align-items:center; padding:0 12px; color:#fff; font-size:13.5px; font-weight:600; white-space:nowrap; }
+  .t1 { width:16%; background:#16a34a; }
+  .t2 { width:52%; background:#f59e0b; }
+  .t3 { width:88%; background:#dc2626; }
+  .tdesc { font-size:13px; color:#64748b; flex:1; }
+  .tcap { font-size:13px; color:#94a3b8; margin-top:6px; }
 </style>
 </head>
 <body>
@@ -72,6 +80,13 @@
       <li><b>有什么用</b>：把"会做某件事的方法"沉淀成资产——一次编写、每次复用、输出质量稳定；相当于给 AI 装专业外挂</li>
       <li><b>别搞混</b>：Skill 管"怎么做"（SOP 手册），MCP 管"连得上"（USB 外设），RAG 管"查什么"（资料柜）——三个互补，不是竞品</li>
     </ul>
+    <div class="tiers">
+      <b style="font-size:14.5px">📈 渐进式加载：每一层占用的"脑容量"逐级增大</b>
+      <div class="tier"><div class="tbar t1">① 一行 description</div><div class="tdesc">平时常驻，几乎零成本</div></div>
+      <div class="tier"><div class="tbar t2">② SKILL.md 正文</div><div class="tdesc">任务命中后才读入</div></div>
+      <div class="tier"><div class="tbar t3">③ 脚本 / 参考资料</div><div class="tdesc">正文里引用到才打开</div></div>
+      <div class="tcap">条越长 = 占用上下文越多。三层设计让"装 100 个技能"也不撑爆窗口。</div>
+    </div>
   </div>
 
   <div class="card">
