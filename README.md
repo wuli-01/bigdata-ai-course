@@ -10,13 +10,24 @@
 
 ```
 bigdata-ai-course/
+├── .workbuddy/
+│   └── skills/
+│       └── concept-crash-course/
+│           └── SKILL.md      # 项目级 Skill：概念速成卡片生成器
 └── learning-materials/
-    └── agent-skill.html   # 概念学习资料：Agent Skill（智能体技能）
+    └── agent-skill.html      # 概念学习资料：Agent Skill（智能体技能）
 ```
 
 | 文件 | 说明 |
 |------|------|
+| `.workbuddy/skills/concept-crash-course/SKILL.md` | 项目级 Agent Skill：接收任意新概念，产出"单页 HTML 学习卡 + 闯关测试"的完整流程规范 |
 | `learning-materials/agent-skill.html` | Agent Skill 一页速览：奶茶店 SOP 卡类比 + 4 个核心要点 + 4 条已核实来源 + **两关六题闯关测试**（答对升级、答错降级、通关后可点"再玩一次"） |
+
+### 怎么使用这个 Skill
+
+在 WorkBuddy 中打开本仓库工作区，直接说一句 **"我想学习 XX 概念"**（例如"我想学习 Hadoop"），
+智能体会匹配到 `concept-crash-course` 的 description，按 SKILL.md 的流程产出
+`learning-materials/<概念英文名>.html` 并更新 README。Skill 是通用的，不是只为某三个概念写的一次性提示词。
 
 ### 怎么打开这份学习资料
 
@@ -30,7 +41,7 @@ HTML 是普通网页，任何浏览器直接打开即可，不需要安装任何
 | # | 任务 | 状态 |
 |---|------|------|
 | 1 | 概念学习资料：Agent Skill | ✅ 已完成（`agent-skill.html`） |
-| 2 | 项目级 Skill：`.workbuddy/skills/<名称>/SKILL.md` | ⬜ 待完成 |
+| 2 | 项目级 Skill | ✅ 已完成（`.workbuddy/skills/concept-crash-course/SKILL.md`） |
 | 3 | 概念学习资料：AI Agent | ⬜ 待完成 |
 | 4 | 概念学习资料：大模型的上下文 | ⬜ 待完成 |
 | 5 | 概念关系说明（三概念之间的关系） | ⬜ 待完成 |
