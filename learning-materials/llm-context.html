@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>概念学习：大模型的上下文（Context）</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:"Segoe UI","Microsoft YaHei",sans-serif; background:#f5f7fa; color:#2d3748; line-height:1.7; }
+  .wrap { max-width:860px; margin:0 auto; padding:26px 16px 60px; }
+  .badge { display:inline-block; background:#ecfdf5; color:#0d9488; font-size:13px; font-weight:600; padding:3px 12px; border-radius:99px; margin-bottom:10px; }
+  h1 { font-size:28px; margin-bottom:4px; }
+  .sub { color:#718096; margin-bottom:20px; font-size:14.5px; }
+  .card { background:#fff; border-radius:14px; padding:20px 22px; margin-bottom:16px; box-shadow:0 1px 4px rgba(0,0,0,.07); }
+  .card h2 { font-size:19px; margin-bottom:12px; display:flex; align-items:center; gap:8px; }
+  .num { background:#0d9488; color:#fff; min-width:26px; height:26px; border-radius:8px; display:inline-flex; align-items:center; justify-content:center; font-size:14px; flex-shrink:0; }
+  .hl { background:linear-gradient(135deg,#ecfdf5,#eff6ff); border-left:4px solid #0d9488; }
+  .hl p { font-size:16.5px; font-weight:600; }
+  .story { background:#fffbeb; border-radius:10px; padding:12px 16px; margin-top:10px; font-size:15px; }
+  ul { padding-left:22px; } li { margin:7px 0; }
+  table { width:100%; border-collapse:collapse; margin-top:8px; font-size:14.5px; }
+  th,td { border:1px solid #e2e8f0; padding:8px 11px; text-align:left; vertical-align:top; }
+  th { background:#f7fafc; }
+  code { background:#edf2f7; padding:2px 7px; border-radius:6px; font-size:14px; color:#b83280; }
+  .flow { display:flex; flex-wrap:wrap; gap:6px; align-items:center; margin:12px 0; }
+  .step { background:#ecfdf5; border:1px solid #99f6e4; padding:7px 12px; border-radius:10px; font-size:14px; font-weight:500; }
+  .plus { color:#0d9488; font-weight:700; }
+  .src { font-size:14.5px; } .src li { margin:10px 0; }
+  .src a { color:#0d9488; word-break:break-all; }
+  .date { color:#a0aec0; font-size:13px; }
+  .levelbar { display:flex; gap:8px; margin-bottom:14px; flex-wrap:wrap; }
+  .lv { flex:1; border-radius:10px; padding:8px 12px; font-size:13.5px; font-weight:600; background:#f1f5f9; color:#94a3b8; text-align:center; }
+  .lv.on { background:#0d9488; color:#fff; box-shadow:0 2px 6px rgba(13,148,136,.35); }
+  .lv.done { background:#dcfce7; color:#16a34a; }
+  .qmeta { font-size:13.5px; color:#718096; margin-bottom:6px; }
+  .qtext { font-size:17px; font-weight:600; margin-bottom:12px; }
+  .opt { display:block; width:100%; text-align:left; background:#f7fafc; border:2px solid #e2e8f0; border-radius:10px; padding:11px 14px; margin:8px 0; cursor:pointer; font-size:15px; transition:.15s; font-family:inherit; }
+  .opt:hover:not(:disabled) { border-color:#5eead4; background:#ecfdf5; }
+  .opt:disabled { cursor:default; }
+  .opt.correct { border-color:#16a34a; background:#f0fdf4; }
+  .opt.wrong { border-color:#dc2626; background:#fef2f2; }
+  .expl { display:none; background:#f0fdf4; border-radius:10px; padding:10px 14px; margin-top:10px; font-size:14px; }
+  .nextbtn { display:none; margin-top:12px; background:#0d9488; color:#fff; border:none; border-radius:10px; padding:10px 22px; font-size:15px; font-weight:600; cursor:pointer; font-family:inherit; }
+  .nextbtn:hover { background:#0f766e; }
+  #banner { display:none; text-align:center; padding:14px; border-radius:12px; margin-bottom:14px; font-size:16.5px; font-weight:700; }
+  .banner-up { background:#dcfce7; color:#16a34a; }
+  .banner-win { background:#fef9c3; color:#a16207; }
+  .banner-down { background:#fee2e2; color:#dc2626; }
+  .note { font-size:13.5px; color:#718096; margin-top:8px; }
+  .hidden { display:none; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <span class="badge">概念学习资料 · 大模型的上下文</span>
+  <h1>🧠 大模型的上下文（Context）</h1>
+  <p class="sub">一页速览 + 两关闯关测试 · 生成日期 2026-09-10</p>
+
+  <div class="card hl">
+    <h2>💡 我的个人理解</h2>
+    <p>上下文就是模型"此刻能看见的全部信息"，像一张<b>工作台的桌面</b>：系统提示、聊天历史、工具返回结果、检索来的资料，全都摊在这张桌上。桌面宽度有限（按 token 计量），放不下的就被清走；模型只基于"桌上有什么"来推理——<b>桌上没有的，它就不知道</b>。所以用好大模型，很大程度上就是"上下文管理"这门手艺。</p>
+    <div class="story">
+      <b>生活例子 🍳：</b>厨师做菜时，操作台（<b>上下文</b>）上摆着订单、食材和半成品。台面就那么大，放不下的东西只能收进冰箱（<b>外部存储</b>）——厨师看不见冰箱里有什么，除非你重新拿出来摆上台面。而且订单压在最下面时容易被忽略，放在最显眼的位置才会被第一时间看到（<b>位置偏差</b>）。
+    </div>
+  </div>
+
+  <div class="card">
+    <h2><span class="num">⚙</span>核心机制 / 组成</h2>
+    <div class="flow">
+      <span class="step">系统提示</span><span class="plus">+</span>
+      <span class="step">对话历史</span><span class="plus">+</span>
+      <span class="step">工具调用与结果</span><span class="plus">+</span>
+      <span class="step">检索注入的资料</span><span class="arrow">→</span>
+      <span class="step">拼成一次请求（按 token 计量）</span>
+    </div>
+    <ul>
+      <li><b>Token 计量</b>：上下文长度按 token（词元）算，一个汉字约 1~2 个 token；窗口容量从几万到上百万 token 不等，超出就截断或压缩</li>
+      <li><b>一次性，无记忆</b>：模型本身无状态，"记得之前说过什么"只是因为历史被重新拼进了上下文；<b>新会话 = 新桌面</b></li>
+      <li><b>位置偏差</b>：经典研究发现"Lost in the Middle"——信息在<b>开头或结尾</b>时模型用得最好，塞在长上下文<b>中间</b>性能明显下降</li>
+      <li><b>上下文工程（Context Engineering）</b>：压缩摘要、截断旧历史、RAG 检索注入、Skill 按需加载——都是为了在有限窗口里放"最有用的东西"</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2><span class="num">🎯</span>具体应用场景（我自己的经历）</h2>
+    <p>帮我 push 仓库那次，AI 助手的上下文里装着<b>系统提示（工具规则）+ 整个会话历史（装环境、建仓库的经过）+ 每条命令的输出</b>。正因为它"看见"了 <code>Connection was reset</code> 这条报错出现在上下文里，才会决定下一步去扫描可用 IP。如果开新会话（上下文清空），它就完全不知道之前做过什么，我得从头交代一遍。另外 Agent Skill 的"渐进式加载"本质也是上下文管理：平时只放一行 description，命中了才把整份说明书铺上桌面。</p>
+  </div>
+
+  <div class="card">
+    <h2><span class="num">⚠</span>容易混淆的问题 / 使用边界</h2>
+    <table>
+      <tr><th>容易混淆</th><th>区别</th></tr>
+      <tr><td>上下文 vs 记忆</td><td>"记忆"是拟人说法：短期记忆＝当前上下文，长期记忆＝靠外部存储再检索进上下文；模型本身不会记住任何东西</td></tr>
+      <tr><td>上下文 vs 微调</td><td>微调把知识"焊进"模型参数（训练阶段、成本高、难更新）；上下文是"临时摆在桌上"（推理阶段、随时可换）。查最新资料应靠上下文注入</td></tr>
+      <tr><td>窗口大 vs 用得好</td><td>窗口百万 token ≠ 全都能用好——中间位置的信息仍易被忽略，重要内容应放开头或结尾</td></tr>
+    </table>
+    <ul>
+      <li><b>使用边界</b>：放进上下文的内容会随请求发送给模型服务商，<b>密码、token、个人隐私不要进上下文</b>；上下文越长，费用与延迟越高</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2><span class="num">📚</span>可核查的资料来源</h2>
+    <ul class="src">
+      <li>Nelson F. Liu 等 — <i>Lost in the Middle: How Language Models Use Long Contexts</i>（TACL 2023 / arXiv:2307.03172）：实证发现相关信息位于长上下文**中间**时模型性能显著下降<br>
+        <a href="https://arxiv.org/abs/2307.03172" target="_blank">arxiv.org/abs/2307.03172</a> <span class="date">（核查日期 2026-09-10）</span></li>
+      <li>Prompt Engineering Guide — <i>LLM Settings</i>：max length 等与上下文/输出控制直接相关的参数说明<br>
+        <a href="https://www.promptingguide.ai/introduction/settings" target="_blank">www.promptingguide.ai/introduction/settings</a> <span class="date">（核查日期 2026-09-10）</span></li>
+      <li>Claude Code 官方文档 — <i>Extend Claude with skills</i>：渐进式加载即上下文管理实践，说明技能内容如何按需进入上下文<br>
+        <a href="https://code.claude.com/docs/en/skills" target="_blank">code.claude.com/docs/en/skills</a> <span class="date">（核查日期 2026-09-10）</span></li>
+      <li>各模型官方文档的 "context window" 页面列有具体窗口大小，数据随版本变化，使用前请以官方页面为准 <span class="date">（未逐一核查，建议人工打开确认）</span></li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2><span class="num">🎮</span>闯关测试：两关六题，答错降级重来</h2>
+    <div class="levelbar">
+      <div class="lv on" id="lv1">🚩 第一关 · 基础</div>
+      <div class="lv" id="lv2">⚔️ 第二关 · 进阶</div>
+      <div class="lv" id="lv3">🏆 通关</div>
+    </div>
+    <div id="banner"></div>
+    <button class="nextbtn" id="againbtn" style="display:none;background:#16a34a">🔄 再玩一次（回到第一关）</button>
+    <div id="quiz">
+      <div class="qmeta" id="qmeta"></div>
+      <div class="qtext" id="qtext"></div>
+      <div id="opts"></div>
+      <div class="expl" id="expl"></div>
+      <button class="nextbtn" id="nextbtn">下一题 →</button>
+    </div>
+  </div>
+
+  <p class="note">本页由 AI 按 Skill「concept-crash-course」生成初稿并经人工核查来源；保存路径 learning-materials/llm-context.html</p>
+</div>
+
+<script>
+const levels = [
+  { name: "第一关 · 基础", questions: [
+    { q: "大模型的'上下文'指的是什么？",
+      opts: [
+        { t: "模型训练时用的全部数据", why: "错：那是训练语料，属于模型参数层面的知识，不是上下文。" },
+        { t: "模型这次推理时能看到的所有信息（系统提示+历史+工具结果+注入资料）", ok: true, why: "对！上下文就是当次请求里拼进去的全部内容，模型只基于它来推理。" },
+        { t: "电脑的内存大小", why: "错：上下文按 token 计量，与内存无关。" },
+        { t: "用户输入的最后一个问题", why: "错：上下文包含历史与工具结果，远不止最后一句话。" }
+      ]},
+    { q: "为什么开一个新会话后，模型就'忘了'之前说过什么？",
+      opts: [
+        { t: "模型被重置了", why: "错：模型参数没变，变的是输入内容。" },
+        { t: "因为'记忆'其实是历史被重新拼进上下文；新会话没有历史，所以无从得知", ok: true, why: "对！模型本身无状态，所谓的记住只是把历史重新放进当次上下文。" },
+        { t: "因为网络断开了", why: "错：与网络无关。" },
+        { t: "因为模型故意忘记", why: "错：不是主观行为，是机制如此。" }
+      ]},
+    { q: "上下文容量用什么单位计量？",
+      opts: [
+        { t: "字符数", why: "错：不是按字符，且不同语言字符与 token 的换算不同。" },
+        { t: "token（词元）", ok: true, why: "对！上下文窗口按 token 计量，一个汉字大约 1~2 个 token。" },
+        { t: "秒", why: "错：与时间无关。" },
+        { t: "文件大小（KB）", why: "错：不是按字节计。" }
+      ]}
+  ]},
+  { name: "第二关 · 进阶", questions: [
+    { q: "经典研究 'Lost in the Middle' 的结论是？",
+      opts: [
+        { t: "模型最擅长使用长上下文正中间的信息", why: "错：恰恰相反——中间的信息最容易被忽略。" },
+        { t: "信息放在上下文开头或结尾时模型用得最好，放中间性能明显下降", ok: true, why: "对！该论文实证了位置偏差：即使号称长上下文的模型也存在这个问题，所以重要内容要放开头或结尾。" },
+        { t: "上下文越长模型越聪明", why: "错：长度不等于利用率，长上下文存在明显的利用率问题。" },
+        { t: "模型会随机丢失信息", why: "错：丢失与位置有关，不是随机的。" }
+      ]},
+    { q: "想让模型回答基于最新资料的问题，正确做法是？",
+      opts: [
+        { t: "把资料检索出来，注入当次上下文（RAG）", ok: true, why: "对！最新、易变的知识应通过检索注入上下文，而不是改模型参数。" },
+        { t: "重新训练模型", why: "错：成本极高且无法跟上资料更新速度。" },
+        { t: "反复提醒模型记住", why: "错：模型不会跨会话记忆，提醒无效。" },
+        { t: "把资料打印出来贴在屏幕上", why: "错：模型看不到屏幕。" }
+      ]},
+    { q: "使用上下文时，下面哪个说法是正确的边界意识？",
+      opts: [
+        { t: "上下文只在本地处理，敏感信息随便放", why: "错：内容会随请求发送给模型服务商，敏感信息（密码、token）不应进入。" },
+        { t: "只要窗口够大，就可以把所有资料一次性全塞进去", why: "错：窗口大不等于用得好——中间信息易被忽略，且成本与延迟随长度上升。" },
+        { t: "应进行上下文工程：按需注入、及时压缩、重要内容放开头或结尾，并避免敏感信息", ok: true, why: "对！这正是上下文管理的核心实践，也是 Skill 渐进式加载的设计动机。" },
+        { t: "上下文和微调效果完全一样", why: "错：一个在推理时临时注入，一个在训练时改参数，适用场景不同。" }
+      ]}
+  ]}
+];
+
+let level = 0, qi = 0, answered = false, lastOk = true;
+const $ = id => document.getElementById(id);
+
+function setLevelBar() {
+  $("lv1").className = "lv" + (level === 0 ? " on" : " done");
+  $("lv2").className = "lv" + (level === 1 ? " on" : "");
+  $("lv3").className = "lv";
+  if (level > 1) $("lv3").className = "lv on";
+}
+function showBanner(text, cls) { const b = $("banner"); b.textContent = text; b.className = cls; b.style.display = "block"; }
+function hideBanner() { $("banner").style.display = "none"; }
+
+$("againbtn").onclick = function () {
+  level = 0; qi = 0;
+  $("againbtn").style.display = "none";
+  $("quiz").style.display = "block";
+  render();
+};
+
+function render() {
+  setLevelBar(); answered = false; hideBanner();
+  $("expl").style.display = "none"; $("nextbtn").style.display = "none";
+  const lv = levels[level], q = lv.questions[qi];
+  $("qmeta").textContent = "📍 " + lv.name + " · 第 " + (qi + 1) + " / " + lv.questions.length + " 题";
+  $("qtext").textContent = "Q" + (level * 3 + qi + 1) + ". " + q.q;
+  const box = $("opts"); box.innerHTML = "";
+  q.opts.forEach((o, i) => {
+    const btn = document.createElement("button");
+    btn.className = "opt";
+    btn.textContent = String.fromCharCode(65 + i) + ". " + o.t;
+    btn.onclick = () => answer(i, btn);
+    box.appendChild(btn);
+  });
+}
+
+function answer(i, btn) {
+  if (answered) return;
+  answered = true;
+  const q = levels[level].questions[qi];
+  const ok = !!q.opts[i].ok;
+  lastOk = ok;
+  const buttons = $("opts").children;
+  for (let j = 0; j < buttons.length; j++) {
+    buttons[j].disabled = true;
+    if (q.opts[j].ok) buttons[j].classList.add("correct");
+  }
+  if (!ok) btn.classList.add("wrong");
+  const ex = $("expl");
+  const rightIdx = q.opts.findIndex(o => o.ok);
+  ex.innerHTML = (ok ? '<b style="color:#16a34a">✅ 答对了！</b>' : '<b style="color:#dc2626">❌ 答错了。</b>') +
+    '<br><b>正确答案：' + String.fromCharCode(65 + rightIdx) + '</b> — ' + q.opts[rightIdx].why +
+    (ok ? "" : "<br>你选的选项：" + q.opts[i].why);
+  ex.style.display = "block";
+  const nb = $("nextbtn"); nb.style.display = "inline-block";
+  nb.textContent = ok ? ((level === 1 && qi === 2) ? "查看通关结果 🏆" : "下一题 →")
+                      : (level === 1 ? "降回第一关，重新闯 ↩" : "回到本关第一题，重新闯 ↩");
+}
+
+$("nextbtn").onclick = function () {
+  const wasWrong = !lastOk;
+  hideBanner();
+  if (!wasWrong) {
+    if (qi < 2) { qi++; render(); return; }
+    if (level === 0) {
+      level = 1; qi = 0;
+      showBanner("🎉 第一关通过！升级到第二关 · 进阶题（答错会降回第一关）", "banner-up");
+      $("quiz").classList.add("hidden");
+      setTimeout(() => { render(); $("quiz").classList.remove("hidden"); }, 1200);
+      return;
+    }
+    showBanner("🏆 恭喜通关！现在你明白为什么'管理上下文'这么重要了吧！", "banner-win");
+    $("quiz").style.display = "none";
+    $("againbtn").style.display = "inline-block";
+    setLevelBar(); $("lv3").className = "lv on";
+    return;
+  }
+  if (level === 1) { level = 0; qi = 0; showBanner("⬇️ 第二关答错，降回第一关重新闯（地基要打牢！）", "banner-down"); }
+  else { qi = 0; showBanner("↩️ 本关答错，回到第一题重新闯（看完解析再战）", "banner-down"); }
+  $("quiz").classList.add("hidden");
+  setTimeout(() => { render(); $("quiz").classList.remove("hidden"); }, 1200);
+};
+
+render();
+</script>
+</body>
+</html>

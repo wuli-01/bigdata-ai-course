@@ -75,6 +75,25 @@
   </div>
 
   <div class="card">
+    <h2><span class="num">🎯</span>具体应用场景（就是本仓库在用的）</h2>
+    <p>本仓库的 <code>.workbuddy/skills/concept-crash-course/SKILL.md</code> 就是我亲手创建的一个项目级 Skill。它规定：每当我提出"想学一个新概念"，智能体就按固定流水线工作——核实资料 → 提炼大白话 → 生成卡片式 HTML → 逐条核实来源链接 → 按自检清单交付。你正在读的这份资料，以及同目录的 <code>agent.html</code>、<code>llm-context.html</code>，都是它的产物。换一个新概念（比如"Hadoop"），同一套 Skill 立即能复用，产出风格完全一致。</p>
+  </div>
+
+  <div class="card">
+    <h2><span class="num">⚠</span>容易混淆的问题 / 使用边界</h2>
+    <table>
+      <tr><th>容易混淆</th><th>区别</th></tr>
+      <tr><td>Skill vs MCP 工具</td><td>Skill 教"怎么做"（方法论文档），MCP 管"连得上"（外部系统连接器）；两者常配合——Skill 指导 Agent 去调 MCP 工具</td></tr>
+      <tr><td>Skill vs RAG 知识库</td><td>RAG 检索"事实/资料"，Skill 提供"操作流程"；一个是资料柜，一个是 SOP</td></tr>
+      <tr><td>Skill vs 一次性提示词</td><td>提示词写死在对话里用完即弃；Skill 有名称、有触发条件、可版本管理、可分享复用</td></tr>
+    </table>
+    <ul>
+      <li><b>使用边界</b>：Anthropic 官方提醒——<b>只从可信来源安装 Skill</b>，恶意 Skill 可能借"说明书"诱导智能体执行危险操作（提示注入）</li>
+      <li><b>常见误区</b>：description 写得含糊（如"一个有用的助手"）会导致该触发不触发、不该触发乱触发；要把"使用时机"写具体</li>
+    </ul>
+  </div>
+
+  <div class="card">
     <h2><span class="num">2</span>我是从这些资料里整理的（已逐条点开核实）</h2>
     <ul class="src">
       <li>Agent Skills 开放标准官网 —— SKILL.md 格式的官方定义（name / description 字段）<br>

@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>概念学习：AI Agent（智能体）</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:"Segoe UI","Microsoft YaHei",sans-serif; background:#f5f7fa; color:#2d3748; line-height:1.7; }
+  .wrap { max-width:860px; margin:0 auto; padding:26px 16px 60px; }
+  .badge { display:inline-block; background:#eef2ff; color:#4f46e5; font-size:13px; font-weight:600; padding:3px 12px; border-radius:99px; margin-bottom:10px; }
+  h1 { font-size:28px; margin-bottom:4px; }
+  .sub { color:#718096; margin-bottom:20px; font-size:14.5px; }
+  .card { background:#fff; border-radius:14px; padding:20px 22px; margin-bottom:16px; box-shadow:0 1px 4px rgba(0,0,0,.07); }
+  .card h2 { font-size:19px; margin-bottom:12px; display:flex; align-items:center; gap:8px; }
+  .num { background:#4f46e5; color:#fff; min-width:26px; height:26px; border-radius:8px; display:inline-flex; align-items:center; justify-content:center; font-size:14px; flex-shrink:0; }
+  .hl { background:linear-gradient(135deg,#eef2ff,#e6fffa); border-left:4px solid #4f46e5; }
+  .hl p { font-size:16.5px; font-weight:600; }
+  .story { background:#fffbeb; border-radius:10px; padding:12px 16px; margin-top:10px; font-size:15px; }
+  ul { padding-left:22px; } li { margin:7px 0; }
+  table { width:100%; border-collapse:collapse; margin-top:8px; font-size:14.5px; }
+  th,td { border:1px solid #e2e8f0; padding:8px 11px; text-align:left; vertical-align:top; }
+  th { background:#f7fafc; }
+  code { background:#edf2f7; padding:2px 7px; border-radius:6px; font-size:14px; color:#b83280; }
+  .flow { display:flex; flex-wrap:wrap; gap:6px; align-items:center; margin:12px 0; }
+  .step { background:#eef2ff; border:1px solid #c7d2fe; padding:7px 12px; border-radius:10px; font-size:14px; font-weight:500; }
+  .arrow { color:#4f46e5; font-weight:700; }
+  .src { font-size:14.5px; } .src li { margin:10px 0; }
+  .src a { color:#4f46e5; word-break:break-all; }
+  .date { color:#a0aec0; font-size:13px; }
+  .levelbar { display:flex; gap:8px; margin-bottom:14px; flex-wrap:wrap; }
+  .lv { flex:1; border-radius:10px; padding:8px 12px; font-size:13.5px; font-weight:600; background:#f1f5f9; color:#94a3b8; text-align:center; }
+  .lv.on { background:#4f46e5; color:#fff; box-shadow:0 2px 6px rgba(79,70,229,.35); }
+  .lv.done { background:#dcfce7; color:#16a34a; }
+  .qmeta { font-size:13.5px; color:#718096; margin-bottom:6px; }
+  .qtext { font-size:17px; font-weight:600; margin-bottom:12px; }
+  .opt { display:block; width:100%; text-align:left; background:#f7fafc; border:2px solid #e2e8f0; border-radius:10px; padding:11px 14px; margin:8px 0; cursor:pointer; font-size:15px; transition:.15s; font-family:inherit; }
+  .opt:hover:not(:disabled) { border-color:#a5b4fc; background:#eef2ff; }
+  .opt:disabled { cursor:default; }
+  .opt.correct { border-color:#16a34a; background:#f0fdf4; }
+  .opt.wrong { border-color:#dc2626; background:#fef2f2; }
+  .expl { display:none; background:#f0fdf4; border-radius:10px; padding:10px 14px; margin-top:10px; font-size:14px; }
+  .nextbtn { display:none; margin-top:12px; background:#4f46e5; color:#fff; border:none; border-radius:10px; padding:10px 22px; font-size:15px; font-weight:600; cursor:pointer; font-family:inherit; }
+  .nextbtn:hover { background:#4338ca; }
+  #banner { display:none; text-align:center; padding:14px; border-radius:12px; margin-bottom:14px; font-size:16.5px; font-weight:700; }
+  .banner-up { background:#dcfce7; color:#16a34a; }
+  .banner-win { background:#fef9c3; color:#a16207; }
+  .banner-down { background:#fee2e2; color:#dc2626; }
+  .note { font-size:13.5px; color:#718096; margin-top:8px; }
+  .hidden { display:none; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <span class="badge">概念学习资料 · AI Agent</span>
+  <h1>🤖 AI Agent（智能体）</h1>
+  <p class="sub">一页速览 + 两关闯关测试 · 生成日期 2026-09-10</p>
+
+  <div class="card hl">
+    <h2>💡 我的个人理解</h2>
+    <p>Agent 就是一个"接了活的实习生"：普通聊天机器人是你说一句它答一句，而 Agent 拿到目标后会<b>自己拆任务、挑工具、动手干、看结果、再修正</b>——不用人在旁边一步步指挥。判断一个 AI 应用是不是 Agent，就看它有没有<b>自主决定"下一步做什么"</b>的能力。</p>
+    <div class="story">
+      <b>生活例子 🛵：</b>外卖店的老板（用户）只说一句"把今晚的订单都送完"。普通店员会站在原地等你下一条指令；而一个靠谱的店员（Agent）会自己：看订单 → 排路线 → 骑电动车出发（<b>工具</b>）→ 发现某条路封了就换条路（<b>看结果再调整</b>）→ 送完回来报告。全程不用老板盯着。
+    </div>
+  </div>
+
+  <div class="card">
+    <h2><span class="num">⚙</span>核心机制 / 组成</h2>
+    <div class="flow">
+      <span class="step">接收目标</span><span class="arrow">→</span>
+      <span class="step">读上下文（记忆）</span><span class="arrow">→</span>
+      <span class="step">规划下一步</span><span class="arrow">→</span>
+      <span class="step">调用工具行动</span><span class="arrow">→</span>
+      <span class="step">观察结果</span><span class="arrow">→</span>
+      <span class="step">循环或结束</span>
+    </div>
+    <ul>
+      <li><b>规划（Planning）</b>：把大目标拆成小步骤，典型范式是 ReAct（推理 → 行动 → 观察 循环）</li>
+      <li><b>工具调用（Tool Use）</b>：执行命令、读写文件、访问网页/API。没有工具只能"想"，有了工具才"能做"</li>
+      <li><b>记忆（Memory）</b>：短期记忆就是上下文里的对话与工具结果；长期记忆靠外部存储检索回来</li>
+      <li><b>循环与终止</b>：在"思考—行动"循环中运行，靠条件（任务完成 / 步数上限 / 需要人工确认）退出</li>
+      <li>Anthropic 的建议：<b>能不用 Agent 就不用</b>——固定流程用"工作流（Workflow）"更可控，开放式多步任务才值得用 Agent</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2><span class="num">🎯</span>具体应用场景（我自己的经历）</h2>
+    <p>课程第一天，我让 AI 助手完成"安装 Git/Python/VS Code → 注册 GitHub → 建仓库 → clone/commit/push"的完整流程。它不是一次性给出完美步骤，而是<b>边做边调整</b>：发现我把仓库名填成了 <code>-</code>，就引导我改名；push 遇到网络被墙，它先测了 5 个代理端口，又扫描可用 IP 修改 hosts；凭据管理器在它环境里崩溃，就换用 Python 直接调 Windows API 读取凭据。这种"遇障绕行、自主换方案"的多步执行，就是典型的 Agent 行为。</p>
+  </div>
+
+  <div class="card">
+    <h2><span class="num">⚠</span>容易混淆的问题 / 使用边界</h2>
+    <table>
+      <tr><th>容易混淆</th><th>区别</th></tr>
+      <tr><td>Agent vs 普通聊天机器人</td><td>机器人只做"一轮问答"；Agent 有目标、会拆解、能多轮自主行动</td></tr>
+      <tr><td>Agent vs 工作流（Workflow）</td><td>工作流的步骤是人预先写死的；Agent 的步骤由模型在运行时自主决定</td></tr>
+      <tr><td>Agent vs Agent Skill</td><td>Agent 是"干活的主体"，Skill 是给它的"说明书包"——主体与能力包的关系</td></tr>
+    </table>
+    <ul>
+      <li><b>使用边界</b>：高风险操作（删库、转账、对外发布）必须有人工确认；步数与权限要有上限</li>
+      <li><b>常见误区</b>："会调工具的就是 Agent"——关键是<b>由谁决定</b>调用顺序；流程写死的只是自动化脚本</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2><span class="num">📚</span>可核查的资料来源</h2>
+    <ul class="src">
+      <li>Anthropic — <i>Building effective agents</i>（工程博客，2024-12-19）：提出"简单可组合"原则，区分 Workflow 与 Agent<br>
+        <a href="https://www.anthropic.com/research/building-effective-agents" target="_blank">www.anthropic.com/research/building-effective-agents</a> <span class="date">（核查日期 2026-09-10）</span></li>
+      <li>IBM — <i>What Are AI Agents?</i>（Anna Gutowska）：定义"AI agent 是利用工具自主设计工作流执行任务的系统"，含 ReAct/ReWOO 范式与分类<br>
+        <a href="https://www.ibm.com/think/topics/ai-agents" target="_blank">www.ibm.com/think/topics/ai-agents</a> <span class="date">（核查日期 2026-09-10）</span></li>
+      <li>Claude Code 官方文档 — <i>Extend Claude with skills</i>：Agent 的能力扩展方式与工具使用<br>
+        <a href="https://code.claude.com/docs/en/skills" target="_blank">code.claude.com/docs/en/skills</a> <span class="date">（核查日期 2026-09-10）</span></li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2><span class="num">🎮</span>闯关测试：两关六题，答错降级重来</h2>
+    <div class="levelbar">
+      <div class="lv on" id="lv1">🚩 第一关 · 基础</div>
+      <div class="lv" id="lv2">⚔️ 第二关 · 进阶</div>
+      <div class="lv" id="lv3">🏆 通关</div>
+    </div>
+    <div id="banner"></div>
+    <button class="nextbtn" id="againbtn" style="display:none;background:#16a34a">🔄 再玩一次（回到第一关）</button>
+    <div id="quiz">
+      <div class="qmeta" id="qmeta"></div>
+      <div class="qtext" id="qtext"></div>
+      <div id="opts"></div>
+      <div class="expl" id="expl"></div>
+      <button class="nextbtn" id="nextbtn">下一题 →</button>
+    </div>
+  </div>
+
+  <p class="note">本页由 AI 按 Skill「concept-crash-course」生成初稿并经人工核查来源；保存路径 learning-materials/agent.html</p>
+</div>
+
+<script>
+const levels = [
+  { name: "第一关 · 基础", questions: [
+    { q: "判断一个 AI 应用是不是 Agent，最关键看什么？",
+      opts: [
+        { t: "它会不会聊天", why: "错：会聊天只是聊天机器人的能力，与是否自主无关。" },
+        { t: "它能不能自主决定'下一步做什么'", ok: true, why: "对！Agent 的核心标志是自主规划——拿到目标后自己拆解步骤、选择工具、根据结果调整。" },
+        { t: "它的模型有多大", why: "错：模型规模与是否为 Agent 无关，小模型也能做 Agent。" },
+        { t: "它是否收费", why: "错：收费方式不是技术特征。" }
+      ]},
+    { q: "Agent 典型的运行循环是？",
+      opts: [
+        { t: "输入 → 输出", why: "错：这是普通问答的模式，没有循环。" },
+        { t: "规划 → 调用工具 → 观察结果 → 再规划（循环）", ok: true, why: "对！即 ReAct 范式：推理与行动交替进行，直到任务完成或触发终止条件。" },
+        { t: "训练 → 部署 → 推理", why: "错：这是模型生命周期，不是 Agent 的运行循环。" },
+        { t: "读取 → 删除 → 退出", why: "错：毫无依据。" }
+      ]},
+    { q: "下面哪个能力，没有它 Agent 就只能'想'不能'做'？",
+      opts: [
+        { t: "工具调用（Tool Use）", ok: true, why: "对！模型本身只能生成文本，必须借助工具（执行命令、读写文件、访问接口）才能真正改变外部世界。" },
+        { t: "更大的上下文窗口", why: "错：上下文决定'看得多不多'，不决定'做不做得到'。" },
+        { t: "更快的网速", why: "错：网速与能力本质无关。" },
+        { t: "更多的训练数据", why: "错：训练数据是模型固有属性，与 Agent 行动能力无关。" }
+      ]}
+  ]},
+  { name: "第二关 · 进阶", questions: [
+    { q: "Anthropic 对'什么时候该用 Agent'的建议是？",
+      opts: [
+        { t: "能用就用，Agent 永远更先进", why: "错：官方明确反对过度使用——复杂度和不可预测性会带来成本。" },
+        { t: "固定流程用工作流（Workflow）更可控，只有开放式多步任务才值得用 Agent", ok: true, why: "对！原文强调'保持简单'：能预测步骤就写死流程，步骤无法预先确定的开放式任务才交给 Agent 自主决策。" },
+        { t: "只能用于写代码", why: "错：Agent 适用于客服、编码、运维等多种场景。" },
+        { t: "看心情", why: "错：有明确的工程判断标准。" }
+      ]},
+    { q: "Agent 和'工作流（Workflow）'最本质的区别是？",
+      opts: [
+        { t: "Agent 更贵", why: "错：成本差异不是本质区别。" },
+        { t: "步骤由谁决定：工作流是人预先写死的，Agent 由模型运行时自主决定", ok: true, why: "对！这是区分二者的根本——控制权在流程定义者还是模型。" },
+        { t: "工作流不能调用工具", why: "错：工作流同样可以调用工具，只是顺序固定。" },
+        { t: "两者完全一样", why: "错：控制方式不同。" }
+      ]},
+    { q: "使用 Agent 时，为什么高风险操作（删库、转账、对外发布）必须保留人工确认？",
+      opts: [
+        { t: "因为相关法律要求所有 AI 操作都要人工审核", why: "错：并非所有场景都有法定要求，这是工程实践建议。" },
+        { t: "因为 Agent 会自主决策，行为难以完全预测，出错可能造成不可逆损失", ok: true, why: "对！自主性意味着不可预测性，官方最佳实践要求设置活动日志、可中断机制与人工监督。" },
+        { t: "因为 Agent 一定会出错", why: "错：说法过于绝对，Agent 并非必然出错，而是'可能'出错且后果需控制。" },
+        { t: "只是为了让流程显得严谨", why: "错：有实际的风险控制目的。" }
+      ]}
+  ]}
+];
+
+let level = 0, qi = 0, answered = false, lastOk = true;
+const $ = id => document.getElementById(id);
+
+function setLevelBar() {
+  $("lv1").className = "lv" + (level === 0 ? " on" : " done");
+  $("lv2").className = "lv" + (level === 1 ? " on" : "");
+  $("lv3").className = "lv";
+  if (level > 1) $("lv3").className = "lv on";
+}
+function showBanner(text, cls) { const b = $("banner"); b.textContent = text; b.className = cls; b.style.display = "block"; }
+function hideBanner() { $("banner").style.display = "none"; }
+
+$("againbtn").onclick = function () {
+  level = 0; qi = 0;
+  $("againbtn").style.display = "none";
+  $("quiz").style.display = "block";
+  render();
+};
+
+function render() {
+  setLevelBar(); answered = false; hideBanner();
+  $("expl").style.display = "none"; $("nextbtn").style.display = "none";
+  const lv = levels[level], q = lv.questions[qi];
+  $("qmeta").textContent = "📍 " + lv.name + " · 第 " + (qi + 1) + " / " + lv.questions.length + " 题";
+  $("qtext").textContent = "Q" + (level * 3 + qi + 1) + ". " + q.q;
+  const box = $("opts"); box.innerHTML = "";
+  q.opts.forEach((o, i) => {
+    const btn = document.createElement("button");
+    btn.className = "opt";
+    btn.textContent = String.fromCharCode(65 + i) + ". " + o.t;
+    btn.onclick = () => answer(i, btn);
+    box.appendChild(btn);
+  });
+}
+
+function answer(i, btn) {
+  if (answered) return;
+  answered = true;
+  const q = levels[level].questions[qi];
+  const ok = !!q.opts[i].ok;
+  lastOk = ok;
+  const buttons = $("opts").children;
+  for (let j = 0; j < buttons.length; j++) {
+    buttons[j].disabled = true;
+    if (q.opts[j].ok) buttons[j].classList.add("correct");
+  }
+  if (!ok) btn.classList.add("wrong");
+  const ex = $("expl");
+  const rightIdx = q.opts.findIndex(o => o.ok);
+  ex.innerHTML = (ok ? '<b style="color:#16a34a">✅ 答对了！</b>' : '<b style="color:#dc2626">❌ 答错了。</b>') +
+    '<br><b>正确答案：' + String.fromCharCode(65 + rightIdx) + '</b> — ' + q.opts[rightIdx].why +
+    (ok ? "" : "<br>你选的选项：" + q.opts[i].why);
+  ex.style.display = "block";
+  const nb = $("nextbtn"); nb.style.display = "inline-block";
+  nb.textContent = ok ? ((level === 1 && qi === 2) ? "查看通关结果 🏆" : "下一题 →")
+                      : (level === 1 ? "降回第一关，重新闯 ↩" : "回到本关第一题，重新闯 ↩");
+}
+
+$("nextbtn").onclick = function () {
+  const wasWrong = !lastOk;
+  hideBanner();
+  if (!wasWrong) {
+    if (qi < 2) { qi++; render(); return; }
+    if (level === 0) {
+      level = 1; qi = 0;
+      showBanner("🎉 第一关通过！升级到第二关 · 进阶题（答错会降回第一关）", "banner-up");
+      $("quiz").classList.add("hidden");
+      setTimeout(() => { render(); $("quiz").classList.remove("hidden"); }, 1200);
+      return;
+    }
+    showBanner("🏆 恭喜通关！六题全过——现在你分得清 Agent、工作流和聊天机器人了吗？", "banner-win");
+    $("quiz").style.display = "none";
+    $("againbtn").style.display = "inline-block";
+    setLevelBar(); $("lv3").className = "lv on";
+    return;
+  }
+  if (level === 1) { level = 0; qi = 0; showBanner("⬇️ 第二关答错，降回第一关重新闯（地基要打牢！）", "banner-down"); }
+  else { qi = 0; showBanner("↩️ 本关答错，回到第一题重新闯（看完解析再战）", "banner-down"); }
+  $("quiz").classList.add("hidden");
+  setTimeout(() => { render(); $("quiz").classList.remove("hidden"); }, 1200);
+};
+
+render();
+</script>
+</body>
+</html>
