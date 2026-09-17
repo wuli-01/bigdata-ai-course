@@ -18,8 +18,7 @@ bigdata-ai-course/
 │   ├── agent.html                  # 概念资料：AI Agent（智能体）
 │   ├── llm-context.html            # 概念资料：大模型的上下文
 │   ├── skill.html                  # 概念资料：Agent Skill（智能体技能）
-│   ├── concept-relationship.html   # 三概念关系说明
-│   └── python-4lessons-map.html    # Python 四节课学习地图（新闻学零基础）
+│   └── concept-relationship.html   # 三概念关系说明
 ├── README.md
 └── .gitignore
 ```
@@ -31,7 +30,6 @@ bigdata-ai-course/
 | `learning-materials/llm-context.html` | 大模型的上下文：厨师操作台类比 + token 计量与位置偏差 + **上下文组成堆叠条形图 + 注意力位置偏差渐变图** + push 实战场景 + 与记忆/微调的辨析 + 3 条来源 + 闯关测试 |
 | `learning-materials/skill.html` | Agent Skill：奶茶店 SOP 卡类比 + 渐进式加载 + **三层加载"脑容量"阶梯图** + 本仓库 Skill 实战场景 + 与 MCP/RAG 的辨析 + 4 条来源 + 闯关测试 |
 | `learning-materials/concept-relationship.html` | 三概念关系：厨师/操作台/菜谱卡类比 + 角色对比表 + 协作流程图 + **知识飞轮环形图（SVG 动画）** + 两个重点问题（上下文如何影响 Agent、Skill 如何沉淀知识） |
-| `learning-materials/python-4lessons-map.html` | Python 四节课学习地图（新闻学零基础）：学习路线图 + 每节 45 分钟时间分配可视化 + 4 个可带走的小作品 + 打卡进度（浏览器本地记忆）+ 小白 5 条铁律 |
 
 所有可视化均用**纯 SVG/CSS 实现**（部分带动画），不依赖外部 CDN，离线双击即可完整显示。
 
